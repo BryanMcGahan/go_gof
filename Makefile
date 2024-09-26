@@ -1,7 +1,12 @@
-all: build run
+BUILD_PATH=./bin/go_gof
 
-build:
-	go build -o ./build/go_gof .
+compile:
+	go build -o $(BUILD_PATH) main.go
 
 run:
-	./build/go_gof $(FILE)
+	$(BUILD_PATH)  -screenWidth=$(WIDTH) -screenHeight=$(HEIGHT) -filePath=$(FILE)
+
+clean:
+	rm -f $(BUILD_PATH)
+
+all: clean compile run

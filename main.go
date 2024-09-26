@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"log"
 	"math/rand"
@@ -45,11 +46,20 @@ var liveColor rl.Color = rl.Color{R: 143, G: 57, B: 133, A: 255}
 
 func main() {
 
-	var game Game
-	args := os.Args[1:]
+	screenWidthFlag := flag.Int("screenWidth", 800, "Set Screen Width")
+	screenHeightFlag := flag.Int("screenHeight", 800, "Set Screen Height")
+	fileFlag := flag.String("filePath", "", "File path to load a default")
 
-	if len(args) > 0 {
-		file, err := os.Open(args[0])
+	flag.Parse()
+
+	screenWidth = int32(*screenWidthFlag)
+	screenHeight = int32(*screenHeightFlag)
+	fmt.Println(screenWidth, screenHeight, fileFlag)
+
+	var game Game
+
+	if *fileFlag != "" {
+		file, err := os.Open(*fileFlag)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -60,6 +70,8 @@ func main() {
 			log.Fatal(err)
 		}
 	} else {
+		numOfRows = (screenHeight - (padding * 2)) / cellSize
+		numOfCols = (screenWidth - (padding * 2)) / cellSize
 		game.Init(false)
 	}
 
@@ -71,9 +83,6 @@ func main() {
 	defer rl.CloseWindow()
 
 	rl.SetTargetFPS(30)
-
-	numOfRows = (screenHeight - (padding * 2)) / cellSize
-	numOfCols = (screenWidth - (padding * 2)) / cellSize
 
 	for !rl.WindowShouldClose() {
 
